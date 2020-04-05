@@ -31,7 +31,8 @@ public class FileController {
     }
 
     @PostMapping
-    public R<String> upAvatar(MultipartFile avatar) {
+    public R<Ufile> upAvatar(MultipartFile avatar) {
+        Ufile ufile = new Ufile();
         String originalFilename = avatar.getOriginalFilename();
         String extname = originalFilename.substring(originalFilename.lastIndexOf("."));
         String filename = UUID.randomUUID().toString();
@@ -39,7 +40,6 @@ public class FileController {
         File newFile = new File(localUrl + File.separator + "avatar" + File.separator + filename + extname);
         try {
             avatar.transferTo(newFile);
-            Ufile ufile = new Ufile();
             ufile.setPath(url);
             ufile.setName(originalFilename);
             ufileService.save(ufile);
@@ -47,7 +47,7 @@ public class FileController {
             e.printStackTrace();
             return R.failed("500");
         }
-        return R.ok(url);
+        return R.ok(ufile);
     }
 
 }
