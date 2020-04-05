@@ -25,8 +25,9 @@ public class FileController {
     private UfileService ufileService;
 
     @GetMapping
-    public R<String> getFileById(Long id) {
-        return R.ok(baseUrl);
+    public R<String> getUrl(Long fileId){
+        Ufile byId = ufileService.getById(fileId);
+        return R.ok(byId.getPath());
     }
 
     @PostMapping
@@ -48,4 +49,5 @@ public class FileController {
         }
         return R.ok(url);
     }
+
 }
