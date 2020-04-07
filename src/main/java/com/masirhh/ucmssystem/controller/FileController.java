@@ -25,7 +25,7 @@ public class FileController {
     private UfileService ufileService;
 
     @GetMapping
-    public R<String> getUrl(Long fileId){
+    public R<String> getUrl(Long fileId) {
         Ufile byId = ufileService.getById(fileId);
         return R.ok(byId.getPath());
     }
@@ -50,4 +50,18 @@ public class FileController {
         return R.ok(ufile);
     }
 
+    @PostMapping("/uphome")
+    public R<Boolean> upHomeImg(MultipartFile img, @RequestParam("pos") String pos) throws IOException {
+        String baseurl = "D:\\WorkSpace\\ucmsfiles\\carousel\\";
+        String fileurl = baseurl + "car" + pos+".png";
+        File file = new File(fileurl);
+        boolean exists = file.exists();
+        if (exists) {
+            file.delete();
+            img.transferTo(file);
+        } else {
+            img.transferTo(file);
+        }
+        return R.ok(true);
+    }
 }
