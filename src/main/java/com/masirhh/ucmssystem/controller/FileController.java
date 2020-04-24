@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,12 +25,32 @@ public class FileController {
     @Autowired
     private UfileService ufileService;
 
+    /**
+     * 获取文件url
+     * @param fileId 文件id
+     * @return 文件地址
+     */
     @GetMapping
     public R<String> getUrl(Long fileId) {
         Ufile byId = ufileService.getById(fileId);
         return R.ok(byId.getPath());
     }
 
+    /**
+     * 获取文件列表
+     * @return
+     */
+    @GetMapping("/filelist")
+    public R<List<Ufile>> getFileList(){
+        List<Ufile> list = ufileService.list();
+        return R.ok(list);
+    }
+
+    /***
+     * 上传图片
+     * @param avatar 图片
+     * @return 文件信息
+     */
     @PostMapping
     public R<Ufile> upAvatar(MultipartFile avatar) {
         Ufile ufile = new Ufile();
@@ -50,6 +71,13 @@ public class FileController {
         return R.ok(ufile);
     }
 
+    /**
+     * 上传首页轮播图
+     * @param img 图片
+     * @param pos 轮播图位置
+     * @return 是否上传成功
+     * @throws IOException
+     */
     @PostMapping("/uphome")
     public R<Boolean> upHomeImg(MultipartFile img, @RequestParam("pos") String pos) throws IOException {
         String baseurl = "D:\\WorkSpace\\ucmsfiles\\carousel\\";
@@ -63,5 +91,16 @@ public class FileController {
             img.transferTo(file);
         }
         return R.ok(true);
+    }
+
+    /**
+     * 删除文件表中的记录
+     * @param ufile 文件
+     * @return 是否删除成功
+     */
+    @DeleteMapping()
+    public R<Boolean> deleteFile(@RequestBody Ufile ufile){
+        boolean b = ufileService.removeById(ufile.getId());
+        return R.ok(b);
     }
 }
